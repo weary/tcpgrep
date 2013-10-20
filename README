@@ -1,1 +1,32 @@
-TODO
+tcpgrep
+=======
+
+Search through tcp-streams with regular expressions.
+Tcpgrep reconstructs all tcpstreams from packets in a pcap file and applies a
+regular expression. Matched text is printed to stdout.
+Optionally writes a new pcap with only the streams that contained matches.
+
+
+Examples
+--------
+
+Get all http-requests from a pcap (question marks for non-greedy match):
+  ``tcpgrep '^\w+? /[^ *]+? .*?HTTP/1.1$' test.pcap``
+
+Print full http headers for GET-requests with certain header:
+  ``tcpgrep '^GET .*?^Host: testhost.com.*?\r\n\r\n' test.pcap --no-trailing-newline``
+
+Create a pcap with only the requests for a certain host:
+  ``tcpgrep '^Host: testhost.com$' test.pcap -w out.pcap -q``
+
+Print content of entire tcp-stream:
+  ``tcpgrep '.*' test.pcap``
+
+
+Remarks
+-------
+
+Order of matched results can be messy if the input pcap is not clean (for
+example, due to packetloss, incomplete snaplen or skewed rx/tx). Use the -t
+option to add timestamps to the matches and sort the results if order is
+important.
