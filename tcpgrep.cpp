@@ -267,9 +267,12 @@ void stream_writer_t::begin_capture(const std::string &name, int linktype, int s
 	if ((d_linktype !=0 || d_snaplen !=0) &&
 			(d_linktype != linktype || d_snaplen != snaplen))
 		throw std::runtime_error("snaplen/linktype changed! cannot mix these pcaps");
-	d_linktype = linktype;
-	d_snaplen = snaplen;
-	d_writer = new pcap_writer_t(d_fname, d_linktype, d_snaplen);
+	if (!d_writer)
+	{
+		d_linktype = linktype;
+		d_snaplen = snaplen;
+		d_writer = new pcap_writer_t(d_fname, d_linktype, d_snaplen);
+	}
 }
 
 void stream_writer_t::accept(packet_t *packet)
